@@ -10,10 +10,29 @@ class ClientThread(threading.Thread):
     
     def run(self):
         print("Connection is from ", self.clientAddress)
+
+        # Get username and password from client
         clientUserName = self.clientSocket.recv(1024).decode()
         clientPassword = self.clientSocket.recv(1024).decode()
-        print(clientUserName + " " + clientPassword)
 
+        # Read "users.txt" txt file
+        usersFile = open("users.txt", "r")
+        userDict = dict()
+        roleDict = dict()
+        for line in usersFile:
+            line = line.split(';')
+            userDict[line[0]] = line[1]
+            roleDict[line[0]] = line[2]
+
+        # Check if user is exist or not
+        if clientUserName in userDict.keys():
+            # Check password is correct or not
+            if clientPassword == userDict[clientUserName]:
+                self.clientSocket.send(roleDict[clientUserName].encode())
+            else:
+                self.clientSocket.send("INCORRECT PASSWORD!".encode())
+        else:
+            self.clientSocket.send("USER NOT FOUND!".encode())
 
 if __name__ == "__main__":
     HOST = "127.0.0.1"
