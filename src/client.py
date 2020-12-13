@@ -35,7 +35,11 @@ class ClientGui(Frame):
         self.passwordEntry.pack(side = LEFT, padx = 5, pady = 5)
         self.loginButton = Button(self, text="Login", command=self.LoginButtonPressed)
         self.loginButton.pack(padx = 5, pady = 5)
+
+        # Show connection successfull message
         messagebox.showinfo("Success!", "Connection is established!")
+
+        # Set focus to username enrry field
         self.userNameEntry.focus_force()
 
     def LoginButtonPressed(self):
