@@ -5,7 +5,7 @@ from tkinter import messagebox
 class ClientGui(Frame):
     def __init__(self, clientSocket):
         Frame.__init__(self)
-        self.clientSocket = clientSocket
+        self.serverSocket = clientSocket
         self.pack()
 
         # Set Title
@@ -39,11 +39,16 @@ class ClientGui(Frame):
         self.userNameEntry.focus_force()
 
     def LoginButtonPressed(self):
-
+        # Get userName and password from users via Gui
         userName = self.userNameEntry.get()
         password = self.passwordEntry.get()
-        self.clientSocket.send(userName.encode())
-        self.clientSocket.send(password.encode())
+
+        # Send server the informations
+        self.serverSocket.send(userName.encode())
+        self.serverSocket.send(password.encode())
+
+        # Get server response
+        serverResponse = self.serverSocket.recv(1024).decode()
 
 if __name__ == "__main__":
     HOST = "127.0.0.1"
