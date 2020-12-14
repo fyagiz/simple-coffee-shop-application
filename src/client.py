@@ -53,6 +53,18 @@ class ClientGui(Frame):
 
         # Get server response
         serverResponse = self.serverSocket.recv(1024).decode()
+        serverResponse = serverResponse.replace("\n","")
+        print(serverResponse)
+        if serverResponse == "INCORRECT PASSWORD!":
+            messagebox.showerror("Error!", "Invalid credentials")
+        elif serverResponse == "USER NOT FOUND!":
+            messagebox.showerror("Error!", "User not found!")
+        elif serverResponse == "branchmanager":
+            self.destroy()
+            self.showBranchManagerPanel()
+    
+    def showBranchManagerPanel(self):
+        self.master.title("Branch Manager Panel")
 
 if __name__ == "__main__":
     HOST = "127.0.0.1"
@@ -68,7 +80,10 @@ if __name__ == "__main__":
         messagebox.showerror("Error!", "Connection is not established!")
         exit(1)
     
-    # Call main gui
-    window = ClientGui(clientSocket)
-    window.mainloop()
-    clientSocket.close()
+    # Wait for the "Connection Established" message from Server
+    serverResponse = clientSocket.recv(1024).decode()
+    if serverResponse == "Connection Established!":
+        # Call main gui
+        window = ClientGui(clientSocket)
+        window.mainloop()
+        clientSocket.close()
