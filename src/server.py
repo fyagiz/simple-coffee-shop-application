@@ -40,27 +40,30 @@ class ClientThread(threading.Thread):
                     
                     
                     salesMessage=self.clientSocket.recv(1024).decode()
-                    
-                    while salesMessage!="closed":
+                    if clientRole=="branchmanager":
+                        while salesMessage!="closed":
                         
-                        sale = salesMessage.split(' ')[1:]
-                        print(sale)
-                        today = date.today()
-                        d1 = today.strftime("%d.%m.%Y")
-                        sale.append(d1)
-                        print(sale)
-                        salesFile = open("sales.txt","a")
-                        for s in sale:
-                            if s==sale[-1]:
-                                pass
-                            else:
-                                s=s+";"
-                            salesFile.write(s)
-                        salesFile.write("\n")
+                            sale = salesMessage.split(' ')[1:]
+                            print(sale)
+                            today = date.today()
+                            d1 = today.strftime("%d.%m.%Y")
+                            sale.append(d1)
+                            print(sale)
+                            salesFile = open("sales.txt","a")
+                            for s in sale:
+                                if s==sale[-1]:
+                                    pass
+                                else:
+                                    s=s+";"
+                                salesFile.write(s)
+                            salesFile.write("\n")
                         
-                        self.clientSocket.send("record is added".encode())
-                        self.clientSocket.send(clientUserName.encode())
-                        salesMessage=self.clientSocket.recv(1024).decode()
+                            self.clientSocket.send("record is added".encode())
+                            self.clientSocket.send(clientUserName.encode())
+                            salesMessage=self.clientSocket.recv(1024).decode()
+
+                    else:
+                        pass
 
                     
                     
