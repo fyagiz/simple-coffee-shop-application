@@ -109,6 +109,7 @@ class ClientGui(Frame):
         coffee_size = self.size.get()
         CoffeeSelection = ""
         coffee_type=self.coffee.get()
+       
         clientBranch = self.serverSocket.recv(1024).decode()
         print("clientBranch:", clientBranch)
         # Send server the informations
@@ -117,11 +118,12 @@ class ClientGui(Frame):
 
         # Get server response
         serverResponse = self.serverSocket.recv(1024).decode()
-        #if serverResponse=="record is added":
-         #   messagebox.showinfo("Show Success", "Sales record has been added successfully")
-        #else:
-         #   messagebox.showerror("Error", "Sales record has not been added successfully")
-        self.serverSocket.send(salesMessage.encode())
+        if serverResponse=="record is added":
+            messagebox.showinfo("Show Success", "Sales record has been added successfully")
+        else:
+           messagebox.showerror("Error", "Sales record has not been added successfully")
+        
+        print("salesmessage:", salesMessage)
     def CloseButtonPressed(self):
         self.serverSocket.send("closed".encode())
         self.master.destroy()
