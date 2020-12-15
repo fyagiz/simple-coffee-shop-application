@@ -62,9 +62,85 @@ class ClientGui(Frame):
         elif serverResponse == "branchmanager":
             self.destroy()
             self.showBranchManagerPanel()
+        elif serverResponse=="coffeeshopmanager":
+            self.destroy()
+            self.showCoffeeShopManagerPanel()
     
     def showBranchManagerPanel(self):
-        self.master.title("Branch Manager Panel")
+        self.master.title("Coffee Shop Branch")
+        self.CoffeeSelectionFrame = Frame()
+        self.CoffeeSelectionFrame.pack(padx=5, pady=5)
+        
+        self.CoffeeLabel = Label(self.CoffeeSelectionFrame, text = "Coffee: ")
+        self.CoffeeLabel.pack(side=LEFT, padx=5, pady=5)
+        
+        self.CoffeeSelections = ["Americano", "Espresso", "Latte","Cappucino"]
+        
+        self.coffee = StringVar()
+        self.coffee.set(self.CoffeeSelections[0])
+		#If you want have none of them is selected, then you can use self.size.set(None)
+        for CoffeeSelection in self.CoffeeSelections:
+            self.CoffeeTypeSelection = Radiobutton(self.CoffeeSelectionFrame, text= CoffeeSelection, value= CoffeeSelection, variable = self.coffee)
+            self.CoffeeTypeSelection.pack(side=LEFT, padx=5, pady=5)
+            
+        self.frame2 = Frame()
+        self.frame2.pack(padx=5, pady=5)
+        
+        self.CoffeeSizeLabel = Label(self.frame2, text="Size:")
+        self.CoffeeSizeLabel.pack(side = LEFT, padx=5, pady=5)
+        
+        self.CoffeeSizes = ["Small","Medium","Large"]
+        self.size = StringVar()
+        self.size.set(self.CoffeeSizes[0])
+        
+        for CoffeeSize in self.CoffeeSizes:
+            self.CoffeeSizeSelection = Radiobutton(self.frame2, text=CoffeeSize, value=CoffeeSize, variable=self.size)
+            self.CoffeeSizeSelection.pack(side = LEFT, padx=5, pady=5)
+        
+        self.frame3=Frame()
+        self.frame3.pack(padx=5, pady=5)
+        self.InformButton=Button(self.frame3, text = "Inform", command=self.InformButtonPressed)
+        self.InformButton.pack(side=LEFT,padx=5,pady=5)
+        
+        self.CloseButton=Button(self.frame3, text = "Close", command=self.CloseButtonPressed)
+        self.CloseButton.pack(side=LEFT,padx=5,pady=5)
+        
+    def InformButtonPressed(self):
+        coffee_size = self.size.get()
+        CoffeeSelection = ""
+        coffee_type=self.coffee.get()
+        clientBranch = self.serverSocket.recv(1024).decode()
+        print("clientBranch:", clientBranch)
+        # Send server the informations
+        salesMessage="sale "+coffee_type+" "+coffee_size+ " "+clientBranch
+        self.serverSocket.send(salesMessage.encode())
+
+        # Get server response
+        serverResponse = self.serverSocket.recv(1024).decode()
+        #if serverResponse=="record is added":
+         #   messagebox.showinfo("Show Success", "Sales record has been added successfully")
+        #else:
+         #   messagebox.showerror("Error", "Sales record has not been added successfully")
+        self.serverSocket.send(salesMessage.encode())
+    def CloseButtonPressed(self):
+        self.serverSocket.send("closed".encode())
+        self.master.destroy()
+    def showCoffeeShopManagerPanel(self):
+        self.master.title("Coffee Shop Manager")
+        self.ReportSelectionFrame = Frame()
+        self.ReportSelectionFrame.pack(padx=5, pady=5)
+        
+        self.ReportLabel = Label(self.ReportSelectionFrame, text = "Select your report: ")
+        self.ReportLabel.pack(side=LEFT, padx=5, pady=5)
+
+        self.ReportTypes = ["(1)How many Americano, Espresso, Latte and Cappuccino have been sold today?","(2)What is the most popular coffee today?","(3)What is the most popular branch today?","(4)What is the most popular branch in general?"]
+        self.type = StringVar()
+        self.type.set(self.ReportTypes[0])
+        
+        for ReportType in self.ReportTypes:
+            self.ReportTypeSelection = Radiobutton(self.ReportSelectionFrame, text=ReportType, value=ReportType, variable=self.type)
+            self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
+
 
 if __name__ == "__main__":
     HOST = "127.0.0.1"

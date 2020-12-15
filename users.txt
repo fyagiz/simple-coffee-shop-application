@@ -1,0 +1,3 @@
+branchNicosia;nicosia123;branchmanager
+branchKyrenia;kyr3435;branchmanager
+managerC;76843;coffeeshopmanager
