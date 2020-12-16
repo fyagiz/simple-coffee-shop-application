@@ -127,6 +127,8 @@ class ClientGui(Frame):
     def CloseButtonPressed(self):
         self.serverSocket.send("closed".encode())
         self.master.destroy()
+    def RequestButtonPressed(self):
+        print("yes")
     def showCoffeeShopManagerPanel(self):
         self.master.title("Coffee Shop Manager")
         self.ReportSelectionFrame = Frame()
@@ -134,16 +136,38 @@ class ClientGui(Frame):
         
         self.ReportLabel = Label(self.ReportSelectionFrame, text = "Select your report: ")
         self.ReportLabel.pack(side=LEFT, padx=5, pady=5)
-
-        self.ReportTypes = ["(1)How many Americano, Espresso, Latte and Cappuccino have been sold today?","(2)What is the most popular coffee today?","(3)What is the most popular branch today?","(4)What is the most popular branch in general?"]
+        self.Report1Frame=Frame()
+        self.Report1Frame.pack(padx=5, pady=5)
+        self.Report2Frame=Frame()
+        self.Report2Frame.pack(padx=5, pady=5)
+        self.Report3Frame=Frame()
+        self.Report3Frame.pack(padx=5, pady=5)
+        self.Report4Frame=Frame()
+        self.Report4Frame.pack(padx=5, pady=5)
         self.type = StringVar()
-        self.type.set(self.ReportTypes[0])
+        self.type.set(None)
         
-        for ReportType in self.ReportTypes:
-            self.ReportTypeSelection = Radiobutton(self.ReportSelectionFrame, text=ReportType, value=ReportType, variable=self.type)
-            self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
+        
+        self.ReportTypeSelection = Radiobutton(self.Report1Frame, text="(1)How many Americano, Espresso, Latte and Cappuccino have been sold today?", value="ReportType1", variable=self.type)
+        self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
 
+        self.ReportTypeSelection = Radiobutton(self.Report2Frame, text="(2)What is the most popular coffee today?", value="ReportType2", variable=self.type)
+        self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
 
+        self.ReportTypeSelection = Radiobutton(self.Report3Frame, text="(3)What is the most popular branch today?", value="ReportType3", variable=self.type)
+        self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
+
+        self.ReportTypeSelection = Radiobutton(self.Report4Frame, text="(4)What is the most popular branch in general?", value="ReportType4", variable=self.type)
+        self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
+
+        self.SelectionFrame = Frame()
+        self.SelectionFrame.pack(padx=5, pady=5)
+
+        self.InformButton=Button(self.SelectionFrame, text = "Request", command=self.RequestButtonPressed)
+        self.InformButton.pack(side=LEFT,padx=5,pady=5)
+        
+        self.CloseButton=Button(self.SelectionFrame, text = "Close", command=self.CloseButtonPressed)
+        self.CloseButton.pack(side=LEFT,padx=5,pady=5)
 if __name__ == "__main__":
     HOST = "127.0.0.1"
     PORT = 5000

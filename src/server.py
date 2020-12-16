@@ -34,13 +34,15 @@ class ClientThread(threading.Thread):
                 if clientPassword == userDict[clientUserName]:
                     self.clientSocket.send(roleDict[clientUserName].encode())
                     clientRole = roleDict[clientUserName]
+                    
 
                     isLogin = True
                     self.clientSocket.send(clientUserName.encode())
                     
                     
                     salesMessage=self.clientSocket.recv(1024).decode()
-                    if clientRole=="branchmanager":
+                    
+                    if clientRole=="branchmanager\n":
                         while salesMessage!="closed":
                         
                             sale = salesMessage.split(' ')[1:]
