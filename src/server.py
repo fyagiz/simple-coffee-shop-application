@@ -37,13 +37,14 @@ class ClientThread(threading.Thread):
                     
 
                     isLogin = True
-                    self.clientSocket.send(clientUserName.encode())
                     
-                    
-                    salesMessage=self.clientSocket.recv(1024).decode()
 
 
                     if clientRole=="branchmanager\n":
+                        self.clientSocket.send(clientUserName.encode())
+                    
+                    
+                        salesMessage=self.clientSocket.recv(1024).decode()
                         while salesMessage!="closed":
                         
                             sale = salesMessage.split(' ')[1:]
@@ -66,7 +67,38 @@ class ClientThread(threading.Thread):
                             salesMessage=self.clientSocket.recv(1024).decode()
 
                     else:
-                        pass
+                        #Get the report choice from client.
+                        report_selection=self.clientSocket.recv(1024).decode()
+                        while report_selection!="closed":
+                            if report_selection=="report1":
+                                today = date.today()
+                                d1 = today.strftime("%d.%m.%Y")
+                            
+                                salesFile=open("sales.txt", "r")
+                                report=salesFile.readlines()
+                            
+                                latteCounter=0
+                                americanoCounter=0
+                                cappucinoCounter=0
+                                espressoCounter=0
+                                for item in report:
+                                    if item.find(d1)!=-1:
+                                        if item.find("Latte")!=-1:
+                                            latteCounter=latteCounter+1
+                                        elif item.find("Americano")!=-1:
+                                            americanoCounter=americanoCounter+1
+                                        elif item.find("Espresso")!=-1:
+                                            espressoCounter=espressoCounter+1
+                                        elif item.find("Cappucino")!=-1:
+                                            cappucinoCounter=cappucinoCounter+1
+                                        else:
+                                            pass
+                                report1message="report1:"+str(americanoCounter)+";"+str(espressoCounter)+";"+str(latteCounter)+";"+str(cappucinoCounter)
+                                print("report1message",report1message)
+                                #Send to client report
+                                self.clientSocket.send(report1message.encode())
+                                report_selection=self.clientSocket.recv(1024).decode()
+                                #print("lattes:",latteCounter, "americanos:",americanoCounter,"cappucinos",cappucinoCounter,"espressos",espressoCounter)
 
                     
                     

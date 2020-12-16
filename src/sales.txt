@@ -10,3 +10,7 @@ Americano;Small;branchNicosia;16.12.2020
 Americano;Small;branchNicosia;16.12.2020
 Americano;Small;branchNicosia;16.12.2020
 Americano;Small;branchNicosia;16.12.2020
+Americano;Small;branchNicosia;17.12.2020
+Espresso;Medium;branchNicosia;17.12.2020
+Cappucino;Small;branchNicosia;17.12.2020
+Espresso;Large;branchNicosia;17.12.2020

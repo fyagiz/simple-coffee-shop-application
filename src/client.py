@@ -39,7 +39,7 @@ class ClientGui(Frame):
         # Show connection successfull message
         messagebox.showinfo("Success!", "Connection is established!")
 
-        # Set focus to username enrry field
+        # Set focus to username entry field
         self.userNameEntry.focus_force()
 
     def LoginButtonPressed(self):
@@ -128,7 +128,23 @@ class ClientGui(Frame):
         self.serverSocket.send("closed".encode())
         self.master.destroy()
     def RequestButtonPressed(self):
-        print("yes")
+        report_selection=self.type.get()
+        print("report_selection", report_selection)
+
+        # Send server the informations
+        self.serverSocket.send(report_selection.encode())
+
+        # Get server response
+        reportmessage=self.serverSocket.recv(1024).decode()
+        if report_selection=="report1":
+            new_report=reportmessage.split(":")[1:]
+            print(new_report)
+            new_report=new_report[0].split(";")
+            print(new_report)
+            messagebox.showinfo("Message", "Americano:"+new_report[0]+"\nEspresso:"+new_report[1]+"\nLatte:"+new_report[2]+"\nCappucino:"+new_report[3])
+            
+            #self.serverSocket.send(report_selection.encode())
+
     def showCoffeeShopManagerPanel(self):
         self.master.title("Coffee Shop Manager")
         self.ReportSelectionFrame = Frame()
@@ -148,16 +164,16 @@ class ClientGui(Frame):
         self.type.set(None)
         
         
-        self.ReportTypeSelection = Radiobutton(self.Report1Frame, text="(1)How many Americano, Espresso, Latte and Cappuccino have been sold today?", value="ReportType1", variable=self.type)
+        self.ReportTypeSelection = Radiobutton(self.Report1Frame, text="(1)How many Americano, Espresso, Latte and Cappuccino have been sold today?", value="report1", variable=self.type)
         self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
 
-        self.ReportTypeSelection = Radiobutton(self.Report2Frame, text="(2)What is the most popular coffee today?", value="ReportType2", variable=self.type)
+        self.ReportTypeSelection = Radiobutton(self.Report2Frame, text="(2)What is the most popular coffee today?", value="report2", variable=self.type)
         self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
 
-        self.ReportTypeSelection = Radiobutton(self.Report3Frame, text="(3)What is the most popular branch today?", value="ReportType3", variable=self.type)
+        self.ReportTypeSelection = Radiobutton(self.Report3Frame, text="(3)What is the most popular branch today?", value="report3", variable=self.type)
         self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
 
-        self.ReportTypeSelection = Radiobutton(self.Report4Frame, text="(4)What is the most popular branch in general?", value="ReportType4", variable=self.type)
+        self.ReportTypeSelection = Radiobutton(self.Report4Frame, text="(4)What is the most popular branch in general?", value="report4", variable=self.type)
         self.ReportTypeSelection.pack(side = LEFT, padx=5, pady=5)
 
         self.SelectionFrame = Frame()
