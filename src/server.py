@@ -41,7 +41,8 @@ class ClientThread(threading.Thread):
                     
                     
                     salesMessage=self.clientSocket.recv(1024).decode()
-                    
+
+
                     if clientRole=="branchmanager\n":
                         while salesMessage!="closed":
                         
