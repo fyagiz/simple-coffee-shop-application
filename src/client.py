@@ -148,6 +148,15 @@ class ClientGui(Frame):
             new_report=reportmessage.split(":")[1:]
             print(new_report)
             messagebox.showinfo("Message",new_report)
+        elif report_selection=="report3":
+            new_report=reportmessage.split(":")[1:]
+            print(new_report)
+            messagebox.showinfo("Message",new_report)
+        elif report_selection=="report4":
+            new_report=reportmessage.split(":")[1:]
+            print(new_report)
+            messagebox.showinfo("Message",new_report)
+
 
     def showCoffeeShopManagerPanel(self):
         self.master.title("Coffee Shop Manager")

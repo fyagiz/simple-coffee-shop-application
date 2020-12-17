@@ -124,6 +124,44 @@ class ClientThread(threading.Thread):
                                #Send to client report
                                self.clientSocket.send(reportmessage.encode())
                                report_selection=self.clientSocket.recv(1024).decode()
+                            elif report_selection=="report3":
+                                today = date.today()
+                                d1 = today.strftime("%d.%m.%Y")
+                                
+                                salesFile=open("sales.txt", "r")
+                                report=salesFile.readlines()
+                                branchdict={"branchNicosia":0,"branchKyrenia":0}
+                                for item in report:
+                                    if item.find(d1)!=-1:
+                                        if item.find("branchNicosia")!=-1:
+                                            branchdict["branchNicosia"]=branchdict["branchNicosia"]+1
+                                        elif item.find("branchKyrenia")!=-1:
+                                            branchdict["branchKyrenia"]=branchdict["branchKyrenia"]+1
+                                        else:
+                                            pass
+                                print(branchdict)
+                                mostPopularBranchToday = max(branchdict, key=branchdict.get)
+                                reportmessage="report3:"+mostPopularBranchToday
+                                #Send to client report
+                                self.clientSocket.send(reportmessage.encode())
+                                report_selection=self.clientSocket.recv(1024).decode()
+                            elif report_selection=="report4":
+                                salesFile=open("sales.txt", "r")
+                                report=salesFile.readlines()
+                                branchdict={"branchNicosia":0,"branchKyrenia":0}
+                                for item in report:
+                                    if item.find("branchNicosia")!=-1:
+                                        branchdict["branchNicosia"]=branchdict["branchNicosia"]+1
+                                    elif item.find("branchKyrenia")!=-1:
+                                        branchdict["branchKyrenia"]=branchdict["branchKyrenia"]+1
+                                    else:
+                                        pass
+                                print(branchdict)
+                                mostPopularBranchGeneral = max(branchdict, key=branchdict.get)
+                                reportmessage="report4:"+mostPopularBranchGeneral
+                                #Send to client report
+                                self.clientSocket.send(reportmessage.encode())
+                                report_selection=self.clientSocket.recv(1024).decode()
                     
                     
                      
