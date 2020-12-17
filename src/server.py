@@ -99,7 +99,31 @@ class ClientThread(threading.Thread):
                                 self.clientSocket.send(report1message.encode())
                                 report_selection=self.clientSocket.recv(1024).decode()
                                 #print("lattes:",latteCounter, "americanos:",americanoCounter,"cappucinos",cappucinoCounter,"espressos",espressoCounter)
+                            elif report_selection=="report2":
+                               today = date.today()
+                               d1 = today.strftime("%d.%m.%Y")
+                               
+                               salesFile=open("sales.txt", "r")
+                               report=salesFile.readlines()
 
+                               coffeedict={"Americano":0,"Espresso":0,"Latte":0,"Cappucino":0}
+                               for item in report:
+                                   if item.find(d1)!=-1:
+                                       if item.find("Americano")!=-1:
+                                           coffeedict["Americano"]=coffeedict["Americano"]+1
+                                       elif item.find("Espresso")!=-1:
+                                            coffeedict["Espresso"]=coffeedict["Espresso"]+1
+                                       elif item.find("Latte")!=-1:
+                                            coffeedict["Latte"]=coffeedict["Latte"]+1
+                                       elif item.find("Cappucino")!=-1:
+                                            coffeedict["Cappucino"]=coffeedict["Cappucino"]+1
+                                       else:
+                                            pass
+                               mostcoffee = max(coffeedict, key=coffeedict.get)
+                               reportmessage="report2:"+mostcoffee
+                               #Send to client report
+                               self.clientSocket.send(reportmessage.encode())
+                               report_selection=self.clientSocket.recv(1024).decode()
                     
                     
                      
