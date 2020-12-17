@@ -26,13 +26,19 @@ class ClientThread(threading.Thread):
 
         # Get username and password from client
         while isLogin == False:
-            clientUserName = self.clientSocket.recv(1024).decode()
-            clientPassword = self.clientSocket.recv(1024).decode()
+            loginmessage=self.clientSocket.recv(1024).decode()
+            loginmessage=loginmessage.split(" ")[1:]
+
+            clientUserName = loginmessage[0]
+            clientPassword = loginmessage[1]
+            print("username:",clientUserName)
+            print("password:",clientPassword)
             # Check if user is exist or not
             if clientUserName in userDict.keys():
                 # Check password is correct or not
                 if clientPassword == userDict[clientUserName]:
-                    self.clientSocket.send(roleDict[clientUserName].encode())
+                    loginSuccessMessage="loginsuccess "+clientUserName+" "+roleDict[clientUserName]
+                    self.clientSocket.send(loginSuccessMessage.encode())
                     clientRole = roleDict[clientUserName]
                     
 
@@ -166,9 +172,9 @@ class ClientThread(threading.Thread):
                     
                      
                 else:
-                    self.clientSocket.send("INCORRECT PASSWORD!".encode())
+                    self.clientSocket.send("loginfailure invalid credentials".encode())
             else:
-                self.clientSocket.send("USER NOT FOUND!".encode())
+                self.clientSocket.send("loginfailure invalid credentials".encode())
 
 
 if __name__ == "__main__":

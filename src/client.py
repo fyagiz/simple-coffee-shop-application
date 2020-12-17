@@ -48,23 +48,23 @@ class ClientGui(Frame):
         password = self.passwordEntry.get()
 
         # Send server the informations
-        self.serverSocket.send(userName.encode())
-        self.serverSocket.send(password.encode())
+        
+        loginmessage="login "+userName+" "+password
+        self.serverSocket.send(loginmessage.encode())
 
         # Get server response
         serverResponse = self.serverSocket.recv(1024).decode()
-        serverResponse = serverResponse.replace("\n","")
+        serverResponse=serverResponse.split(" ")
         print(serverResponse)
-        if serverResponse == "INCORRECT PASSWORD!":
+        if serverResponse[0] == "loginfailure":
             messagebox.showerror("Error!", "Invalid credentials")
-        elif serverResponse == "USER NOT FOUND!":
-            messagebox.showerror("Error!", "User not found!")
-        elif serverResponse == "branchmanager":
-            self.destroy()
-            self.showBranchManagerPanel()
-        elif serverResponse=="coffeeshopmanager":
-            self.destroy()
-            self.showCoffeeShopManagerPanel()
+        elif serverResponse[0] == "loginsuccess":
+            if serverResponse[2] == "branchmanager\n":
+                self.destroy()
+                self.showBranchManagerPanel()
+            elif serverResponse[2]=="coffeeshopmanager":
+                self.destroy()
+                self.showCoffeeShopManagerPanel()
     
     def showBranchManagerPanel(self):
         self.master.title("Coffee Shop Branch")

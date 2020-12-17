@@ -14,3 +14,8 @@ Americano;Small;branchNicosia;17.12.2020
 Espresso;Medium;branchNicosia;17.12.2020
 Cappucino;Small;branchNicosia;17.12.2020
 Espresso;Large;branchNicosia;17.12.2020
+Espresso;Small;branchKyrenia;17.12.2020
+Latte;Small;branchKyrenia;17.12.2020
+Americano;Medium;branchNicosia;18.12.2020
+Latte;Medium;branchNicosia;18.12.2020
+Espresso;Small;branchNicosia;18.12.2020
