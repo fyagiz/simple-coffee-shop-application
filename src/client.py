@@ -125,7 +125,7 @@ class ClientGui(Frame):
         
         print("salesmessage:", salesMessage)
     def CloseButtonPressed(self):
-        self.serverSocket.send("closed".encode())
+        self.serverSocket.send("TERMINATE".encode())
         self.master.destroy()
     def RequestButtonPressed(self):
         report_selection=self.type.get()
@@ -142,20 +142,23 @@ class ClientGui(Frame):
             new_report=new_report[0].split(";")
             print(new_report)
             messagebox.showinfo("Message", "Americano:"+new_report[0]+"\nEspresso:"+new_report[1]+"\nLatte:"+new_report[2]+"\nCappucino:"+new_report[3])
-            
+
             #self.serverSocket.send(report_selection.encode())
         elif report_selection=="report2":
             new_report=reportmessage.split(":")[1:]
-            print(new_report)
-            messagebox.showinfo("Message",new_report)
+            new_report_string = " "
+            print(new_report_string.join(new_report))
+            messagebox.showinfo("Message",new_report_string.join(new_report))
         elif report_selection=="report3":
             new_report=reportmessage.split(":")[1:]
-            print(new_report)
-            messagebox.showinfo("Message",new_report)
+            new_report_string = " "
+            print(new_report_string.join(new_report))
+            messagebox.showinfo("Message",new_report_string.join(new_report))
         elif report_selection=="report4":
             new_report=reportmessage.split(":")[1:]
-            print(new_report)
-            messagebox.showinfo("Message",new_report)
+            new_report_string = " "
+            print(new_report_string.join(new_report))
+            messagebox.showinfo("Message",new_report_string.join(new_report))
 
 
     def showCoffeeShopManagerPanel(self):
