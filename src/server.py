@@ -51,7 +51,7 @@ class ClientThread(threading.Thread):
                     
                     
                         salesMessage=self.clientSocket.recv(1024).decode()
-                        while salesMessage!="closed":
+                        while salesMessage!="TERMINATE":
                         
                             sale = salesMessage.split(' ')[1:]
                             print(sale)
@@ -67,6 +67,7 @@ class ClientThread(threading.Thread):
                                     s=s+";"
                                 salesFile.write(s)
                             salesFile.write("\n")
+                            salesFile.close()
                         
                             self.clientSocket.send("record is added".encode())
                             self.clientSocket.send(clientUserName.encode())
@@ -75,7 +76,7 @@ class ClientThread(threading.Thread):
                     else:
                         #Get the report choice from client.
                         report_selection=self.clientSocket.recv(1024).decode()
-                        while report_selection!="closed":
+                        while report_selection!="TERMINATE":
                             if report_selection=="report1":
                                 today = date.today()
                                 d1 = today.strftime("%d.%m.%Y")
@@ -126,7 +127,17 @@ class ClientThread(threading.Thread):
                                        else:
                                             pass
                                mostcoffee = max(coffeedict, key=coffeedict.get)
-                               reportmessage="report2:"+mostcoffee
+                               equalCoffee = False
+                               equalCoffeeValue = coffeedict[mostcoffee]
+                               for coffee in coffeedict.keys():
+                                   if (equalCoffee == False) and (coffee != mostcoffee) and (coffeedict[coffee] == coffeedict[mostcoffee]):
+                                       equallCoffeeValue = coffeedict[mostcoffee]
+                                       mostcoffee = mostcoffee + "and" + coffee
+                                       equalCoffee = True
+                                   elif (equalCoffee == True) and (coffee != mostcoffee.split(" ")[0]) and (coffeedict[coffee] == equalCoffeeValue):
+                                        mostcoffee = mostcoffee + "and" + coffee
+                               reportmessage="report2:"+mostcoffee.replace("and", ",")
+                               print(reportmessage)
                                #Send to client report
                                self.clientSocket.send(reportmessage.encode())
                                report_selection=self.clientSocket.recv(1024).decode()
@@ -146,7 +157,10 @@ class ClientThread(threading.Thread):
                                         else:
                                             pass
                                 print(branchdict)
-                                mostPopularBranchToday = max(branchdict, key=branchdict.get)
+                                if (branchdict["branchNicosia"] == branchdict ["branchKyrenia"]):
+                                    mostPopularBranchToday = "branchNicosia and branchKyrenia"
+                                else:
+                                    mostPopularBranchToday = max(branchdict, key=branchdict.get)
                                 reportmessage="report3:"+mostPopularBranchToday
                                 #Send to client report
                                 self.clientSocket.send(reportmessage.encode())
@@ -163,12 +177,14 @@ class ClientThread(threading.Thread):
                                     else:
                                         pass
                                 print(branchdict)
-                                mostPopularBranchGeneral = max(branchdict, key=branchdict.get)
+                                if (branchdict["branchNicosia"] == branchdict ["branchKyrenia"]):
+                                    mostPopularBranchGeneral = "branchNicosia and branchKyrenia"
+                                else:
+                                    mostPopularBranchGeneral = max(branchdict, key=branchdict.get)
                                 reportmessage="report4:"+mostPopularBranchGeneral
                                 #Send to client report
                                 self.clientSocket.send(reportmessage.encode())
                                 report_selection=self.clientSocket.recv(1024).decode()
-                    
                     
                      
                 else:
