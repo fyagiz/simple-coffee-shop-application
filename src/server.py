@@ -1,5 +1,6 @@
 import socket, threading
 from datetime import date
+import time
 
 class ClientThread(threading.Thread):
 
@@ -7,6 +8,7 @@ class ClientThread(threading.Thread):
         threading.Thread.__init__(self)
         self.clientAddress = clientAddress
         self.clientSocket = clientSocket
+        self.threadLock = threading.RLock()
     
     def run(self):
         print("Connection is from ", self.clientAddress)
@@ -40,11 +42,8 @@ class ClientThread(threading.Thread):
                     loginSuccessMessage="loginsuccess "+clientUserName+" "+roleDict[clientUserName]
                     self.clientSocket.send(loginSuccessMessage.encode())
                     clientRole = roleDict[clientUserName]
-                    
 
                     isLogin = True
-                    
-
 
                     if clientRole=="branchmanager\n":
                         self.clientSocket.send(clientUserName.encode())
@@ -60,6 +59,7 @@ class ClientThread(threading.Thread):
                             sale.append(d1)
                             print(sale)
                             salesFile = open("sales.txt","a")
+                            self.threadLock.acquire() # Get Lock the threads 
                             for s in sale:
                                 if s==sale[-1]:
                                     pass
@@ -67,8 +67,8 @@ class ClientThread(threading.Thread):
                                     s=s+";"
                                 salesFile.write(s)
                             salesFile.write("\n")
-                            salesFile.close()
-                        
+                            salesFile.close() 
+                            self.threadLock.release() # Release lock
                             self.clientSocket.send("record is added".encode())
                             self.clientSocket.send(clientUserName.encode())
                             salesMessage=self.clientSocket.recv(1024).decode()
@@ -80,7 +80,7 @@ class ClientThread(threading.Thread):
                             if report_selection=="report1":
                                 today = date.today()
                                 d1 = today.strftime("%d.%m.%Y")
-                            
+                                self.threadLock.acquire() # Get Lock the threads 
                                 salesFile=open("sales.txt", "r")
                                 report=salesFile.readlines()
                             
@@ -105,11 +105,13 @@ class ClientThread(threading.Thread):
                                 #Send to client report
                                 self.clientSocket.send(report1message.encode())
                                 report_selection=self.clientSocket.recv(1024).decode()
+                                salesFile.close()
+                                self.threadLock.release() # Release lock
                                 #print("lattes:",latteCounter, "americanos:",americanoCounter,"cappucinos",cappucinoCounter,"espressos",espressoCounter)
                             elif report_selection=="report2":
                                today = date.today()
                                d1 = today.strftime("%d.%m.%Y")
-                               
+                               self.threadLock.acquire() # Get Lock the threads 
                                salesFile=open("sales.txt", "r")
                                report=salesFile.readlines()
 
@@ -141,10 +143,12 @@ class ClientThread(threading.Thread):
                                #Send to client report
                                self.clientSocket.send(reportmessage.encode())
                                report_selection=self.clientSocket.recv(1024).decode()
+                               salesFile.close()
+                               self.threadLock.release() # Release lock
                             elif report_selection=="report3":
                                 today = date.today()
                                 d1 = today.strftime("%d.%m.%Y")
-                                
+                                self.threadLock.acquire() # Get Lock the threads 
                                 salesFile=open("sales.txt", "r")
                                 report=salesFile.readlines()
                                 branchdict={"branchNicosia":0,"branchKyrenia":0}
@@ -165,7 +169,10 @@ class ClientThread(threading.Thread):
                                 #Send to client report
                                 self.clientSocket.send(reportmessage.encode())
                                 report_selection=self.clientSocket.recv(1024).decode()
+                                salesFile.close()
+                                self.threadLock.release() # Release lock
                             elif report_selection=="report4":
+                                self.threadLock.acquire()
                                 salesFile=open("sales.txt", "r")
                                 report=salesFile.readlines()
                                 branchdict={"branchNicosia":0,"branchKyrenia":0}
@@ -185,8 +192,8 @@ class ClientThread(threading.Thread):
                                 #Send to client report
                                 self.clientSocket.send(reportmessage.encode())
                                 report_selection=self.clientSocket.recv(1024).decode()
-                    
-                     
+                                salesFile.close()
+                                self.threadLock.release() # Release lock
                 else:
                     self.clientSocket.send("loginfailure invalid credentials".encode())
             else:
